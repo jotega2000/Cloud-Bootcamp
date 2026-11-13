@@ -1,320 +1,224 @@
-\# AWS CLI – IAM User Creation and Policy Management
+# AWS CLI – IAM User Creation, Policy Management and Programmatic Access
 
+## Project Overview
 
+This project demonstrates hands-on experience managing AWS Identity and Access Management (IAM) users, permissions, and programmatic authentication using the AWS Command Line Interface (CLI) and Windows PowerShell.
 
-\## Project Overview
+The objective was to create an IAM user, assign an AWS-managed read-only policy, configure dedicated CLI credentials, and validate access to Amazon S3 while applying the principle of least privilege.
 
+## Technologies Used
 
+- Amazon Web Services (AWS)
+- AWS Identity and Access Management (IAM)
+- AWS Command Line Interface (CLI)
+- AWS Security Token Service (STS)
+- Amazon S3
+- Windows PowerShell
+- Git and GitHub
 
-This project demonstrates how to manage AWS Identity and Access Management (IAM) users and permissions using the AWS Command Line Interface (CLI).
+## Project Objectives
 
+1. Authenticate to AWS using the AWS CLI.
+2. Create and verify an IAM user.
+3. Attach an AWS-managed IAM policy.
+4. Verify the policy attachment.
+5. Configure programmatic access using a dedicated AWS CLI profile.
+6. Validate authentication with AWS STS.
+7. Test Amazon S3 read-only access.
+8. Apply least-privilege and credential security practices.
 
+## Project Implementation
 
-The objective is to create an IAM user, assign an AWS-managed policy, and verify the user's permissions while applying the principle of least privilege.
+### Step 1: Verify AWS CLI Authentication
 
+Verified initial AWS CLI authentication using AWS Security Token Service (STS).
 
-
-\## Technologies Used
-
-
-
-\- Amazon Web Services (AWS)
-
-\- AWS Identity and Access Management (IAM)
-
-\- AWS CLI
-
-\- Windows PowerShell
-
-\- Amazon S3
-
-\- Git and GitHub
-
-
-
-\## Project Objectives
-
-
-
-1\. Authenticate to AWS using the AWS CLI.
-
-2\. Create a new IAM user.
-
-3\. Verify successful user creation.
-
-4\. Attach an AWS-managed IAM policy.
-
-5\. Verify the assigned permissions.
-
-6\. Understand IAM access control and least-privilege security.
-
-
-
-\## Project Implementation
-
-
-
-\### Step 1: Verify AWS CLI Authentication
-
-
-
-Verified AWS CLI authentication using AWS Security Token Service (STS).
-
-
-
-```bash
-
+```powershell
 aws sts get-caller-identity
-
 ```
 
+This command identifies the AWS account and IAM principal associated with the default CLI credentials.
 
+### Step 2: Create an IAM User
 
-This command retrieves the AWS account ID and the identity associated with the current CLI credentials.
+Created an IAM user named `cloud-engineer-lab` using AWS CLI.
 
-
-
-\### Step 2: Create an IAM User
-
-
-
-Created an IAM user named `cloud-engineer-lab` using the AWS CLI.
-
-
-
-```bash
-
+```powershell
 aws iam create-user --user-name cloud-engineer-lab
-
 ```
 
+IAM users do not automatically receive permissions when created.
 
+### Step 3: Verify IAM User Creation
 
-This command creates an IAM identity without automatically assigning permissions.
+Listed IAM users and retrieved the new user's details.
 
-
-
-\### Step 3: Verify IAM User Creation
-
-
-
-Listed IAM users to confirm successful creation.
-
-
-
-```bash
-
+```powershell
 aws iam list-users
-
-```
-
-
-
-Verified the specific IAM user:
-
-
-
-```bash
-
 aws iam get-user --user-name cloud-engineer-lab
-
 ```
 
+These commands confirm that the IAM user exists in the AWS account.
 
-
-\### Step 4: Attach an IAM Policy
-
-
+### Step 4: Attach an IAM Policy
 
 Attached the AWS-managed `AmazonS3ReadOnlyAccess` policy to the IAM user.
 
-
-
-```bash
-
+```powershell
 aws iam attach-user-policy --user-name cloud-engineer-lab --policy-arn arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess
-
 ```
 
+This policy provides read-only access to supported Amazon S3 resources and operations, without granting S3 write or delete permissions.
 
+### Step 5: Verify IAM Policy Attachment
 
-This policy grants read-only access to Amazon S3 resources.
+Verified the attached AWS-managed policy.
 
-
-
-The policy allows supported S3 read and listing operations without granting write or delete permissions.
-
-
-
-\### Step 5: Verify IAM Policy Attachment
-
-
-
-Verified the attached policy using:
-
-
-
-```bash
-
+```powershell
 aws iam list-attached-user-policies --user-name cloud-engineer-lab
-
 ```
 
-
-
-Expected output:
-
-
+**Verified output:**
 
 ```json
-
 {
-
-&#x20; "AttachedPolicies": \[
-
-&#x20;   {
-
-&#x20;     "PolicyName": "AmazonS3ReadOnlyAccess",
-
-&#x20;     "PolicyArn": "arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess"
-
-&#x20;   }
-
-&#x20; ]
-
+  "AttachedPolicies": [
+    {
+      "PolicyName": "AmazonS3ReadOnlyAccess",
+      "PolicyArn": "arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess"
+    }
+  ]
 }
-
 ```
 
+This confirms the policy attachment. Effective permissions are separately tested using the IAM user's credentials.
 
+### Step 6: Configure IAM Programmatic Access
 
-This confirms the managed policy is attached to the IAM user. It does not independently test the user's effective permissions.
+Created a new access key for the `cloud-engineer-lab` user through the AWS Management Console.
 
+Configured a dedicated AWS CLI profile using Windows PowerShell.
 
-
-\## Security Best Practices
-
-
-
-This project reinforces several important IAM security principles:
-
-
-
-\- \*\*Least Privilege:\*\* Grant only the permissions required to perform authorized tasks.
-
-\- \*\*Identity Management:\*\* Create and manage individual IAM identities.
-
-\- \*\*Access Control:\*\* Use IAM policies to define permissions.
-
-\- \*\*Permission Verification:\*\* Validate policy attachments using AWS CLI commands.
-
-\- \*\*Credential Security:\*\* Avoid exposing access keys or secrets in source control.
-
-\- \*\*Resource Cleanup:\*\* Remove unused IAM users and credentials after completing lab exercises.
-
-
-
-\## Optional: Programmatic Access
-
-
-
-IAM access keys can be created when programmatic access is specifically required.
-
-
-
-```bash
-
-aws iam create-access-key --user-name cloud-engineer-lab
-
+```powershell
+aws configure --profile cloud-engineer-lab
 ```
 
+**Configuration:**
 
+- AWS CLI profile: `cloud-engineer-lab`
+- Default region: `us-east-2`
+- Default output format: `json`
+- Authentication: IAM access key credentials
 
-Long-term access keys should be avoided where temporary credentials or IAM roles can be used instead.
+Credentials were stored locally in the AWS CLI credentials file and excluded from the GitHub repository.
 
+### Step 7: Verify Programmatic Authentication
 
+Used AWS Security Token Service to validate the IAM user's credentials.
 
-\*\*Security Note:\*\* Never commit AWS access keys, secret access keys, or sensitive authentication information to GitHub.
+```powershell
+aws sts get-caller-identity --profile cloud-engineer-lab
+```
 
+**Verification result:**
 
+Successfully authenticated as:
 
-\## Resource Cleanup
+```text
+arn:aws:iam::909392366817:user/cloud-engineer-lab
+```
 
+This confirmed that the IAM user's access credentials were valid and that the dedicated AWS CLI profile was configured correctly.
 
+### Step 8: Verify Amazon S3 Read-Only Access
 
-Detach the IAM policy:
+Tested S3 bucket listing using the dedicated IAM user profile.
 
+```powershell
+aws s3 ls --profile cloud-engineer-lab
+```
 
+**Verified output:**
 
-```bash
+```text
+2026-11-12 11:59:47 otega-cloud-lab-2026
+```
 
+Successfully listed an existing S3 bucket using the IAM user's credentials.
+
+This demonstrates that programmatic authentication and the tested S3 listing permission were functioning correctly.
+
+## Security Best Practices
+
+This project reinforced the following IAM security principles:
+
+- **Least Privilege:** Assigned `AmazonS3ReadOnlyAccess` rather than administrator permissions.
+- **Identity Management:** Created a dedicated IAM user for the lab.
+- **Access Control:** Used an AWS-managed IAM policy to define permitted actions.
+- **Credential Security:** Kept access keys and secret access keys out of GitHub.
+- **Profile Separation:** Used a named CLI profile to separate lab credentials from administrator credentials.
+- **Permission Verification:** Validated authentication and S3 access with AWS CLI commands.
+- **Credential Lifecycle:** Replaced invalid access keys and verified the new credentials.
+- **Temporary Credentials:** Recognized that IAM roles and short-lived credentials are preferred for production environments.
+
+## Resource Cleanup
+
+After completing the lab, remove unused credentials and IAM resources to reduce security risk.
+
+### 1. List Existing Access Keys
+
+```powershell
+aws iam list-access-keys --user-name cloud-engineer-lab
+```
+
+### 2. Delete Access Keys
+
+After identifying the key to remove, run:
+
+```powershell
+aws iam delete-access-key --user-name cloud-engineer-lab --access-key-id YOUR_ACCESS_KEY_ID
+```
+
+### 3. Detach the IAM Policy
+
+```powershell
 aws iam detach-user-policy --user-name cloud-engineer-lab --policy-arn arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess
-
 ```
 
+### 4. Delete the IAM User
 
-
-Delete the IAM user:
-
-
-
-```bash
-
+```powershell
 aws iam delete-user --user-name cloud-engineer-lab
-
 ```
 
+These are optional cleanup instructions. Perform them only when the lab resources are no longer required. Other attached resources or credentials may also need removal before IAM user deletion.
 
+## Key Learning Outcomes
 
-Any access keys or other IAM resources associated with the user must be removed before deletion.
+Through this project, I developed and validated practical skills in:
 
+- AWS IAM user lifecycle management
+- AWS CLI-based identity administration
+- IAM policy attachment and verification
+- AWS CLI named profile configuration
+- Programmatic authentication using AWS STS
+- Amazon S3 read-only permission validation
+- Access key lifecycle management
+- Least-privilege cloud security practices
+- Secure cloud credential handling
 
+## Conclusion
 
-\## Key Learning Outcomes
+This project demonstrates hands-on implementation of AWS IAM identity management, policy-based authorization, and programmatic access using AWS CLI and Windows PowerShell.
 
+By creating a dedicated IAM user, attaching the `AmazonS3ReadOnlyAccess` policy, configuring a named CLI profile, and validating S3 bucket listing, I successfully demonstrated foundational AWS cloud identity and access security capabilities.
 
+These skills are relevant to Cloud Security Engineering, Identity and Access Management (IAM), Cloud Engineering, and DevSecOps.
 
-Through this project, I developed practical understanding of:
+---
 
+**Project Category:** Cloud Security | AWS IAM | Identity and Access Management | AWS CLI
 
+**Learning Program:** Soleyman Cloud Engineering Academy
 
-\- AWS IAM user lifecycle management
-
-\- AWS CLI-based identity administration
-
-\- IAM policy attachment and verification
-
-\- Amazon S3 access permissions
-
-\- Least-privilege access control
-
-\- Cloud identity security best practices
-
-
-
-\## Conclusion
-
-
-
-This project provides foundational hands-on experience with AWS Identity and Access Management through command-line administration.
-
-
-
-The exercise demonstrates how IAM users and policies work together to control access to AWS resources.
-
-
-
-These skills are relevant to Cloud Security Engineering, Identity and Access Management (IAM), and DevSecOps.
-
-
-
-\---
-
-
-
-\*\*Project Category:\*\* Cloud Security | AWS IAM | Identity and Access Management
-
-
-
-\*\*Learning Program:\*\* Soleyman Cloud Engineering Academy
-
+**Project Status:** Completed and Verified
