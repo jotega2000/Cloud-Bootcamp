@@ -1,9 +1,9 @@
-# Week 3 — System Design Applications
+  System Design Applications
 
 **Julius Otega | Cloud Engineer Academy | AWS Cloud Engineering Portfolio**
 
 ## Overview
-Week 3 focused on scalable application architecture, comparing monolithic, microservices, and serverless approaches, and designing cloud systems for e-commerce and video sharing. These are **conceptual system designs**, not deployed or benchmarked applications.
+ This project focused on scalable application architecture, comparing monolithic, microservices, and serverless approaches, and designing cloud systems for e-commerce and video sharing. These are **conceptual system designs**, not deployed or benchmarked applications.
 
 ## Concepts studied
 - Monolithic, microservices, and serverless architectures
